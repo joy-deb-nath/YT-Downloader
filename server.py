@@ -253,7 +253,7 @@ def api_info():
 
 @app.route("/api/thumbnail")
 def api_thumbnail():
-    """Always JPG named as video. ?json=1 returns {thumb_url, filename} for direct download."""
+    """Always JPG named Thumbnail-{VideoID}. ?json=1 returns {thumb_url, filename} for direct download."""
     import urllib.request
     import urllib.error
     url = request.args.get("url", "").strip()
@@ -276,7 +276,7 @@ def api_thumbnail():
                 pass
         if not safe_title:
             safe_title = vid or "thumbnail"
-        filename = f"{safe_title}.jpg"
+        filename = f"Thumbnail-{vid}.jpg" if vid else f"{safe_title}.jpg"
 
         # 1. Direct YouTube JPGs - highest first, always JPG, no expiry
         direct_urls = youtube_thumb_jpg_urls(vid) if vid else []

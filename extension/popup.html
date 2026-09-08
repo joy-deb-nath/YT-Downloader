@@ -47,7 +47,7 @@ button { border:0; border-radius:10px; padding:9px 10px; font-weight:600; cursor
 <div class="wrap">
   <div class="urlrow">
     <input id="url" placeholder="Paste YouTube URL…" />
-    <button id="thumbBtn" class="btn-ghost" style="width:auto" title="Download highest-quality JPG thumbnail named as video"><img src="icons/graphic-style.svg" alt="" />Thumb</button>
+    <button id="thumbBtn" class="btn-ghost" style="width:auto" title="Download highest-quality JPG thumbnail as Thumbnail-{VideoID}.jpg (no server needed)"><img src="icons/graphic-style.svg" alt="" />Thumb</button>
   </div>
   <div id="video" class="video" title="Click thumbnail to download HD">
     <img id="thumb" style="cursor:pointer" />
@@ -62,7 +62,7 @@ button { border:0; border-radius:10px; padding:9px 10px; font-weight:600; cursor
   <div id="barWrap"><div id="bar"></div></div>
   <div id="meta"></div>
   <div id="status"></div>
-  <div class="footer">Requires <b>python server.py</b> on 127.0.0.1:8000 • Own / CC content only</div>
+  <div class="footer">Video needs <b>python server.py</b> on 127.0.0.1:8000 • Thumb works without server • Own / CC content only</div>
 </div>
 <script src="popup.js"></script>
 </body>

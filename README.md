@@ -15,7 +15,10 @@ in highest available merged quality.
 - Per-video quality list with decimal-MB estimates (`≈240.9 MB` = estimate, actual shown on Done)
 - Live progress in popup (`% • downloaded / total • MB/s • ETA`), same numbers as terminal
 - Cancel + Pause/Resume (server-side, resumes `.part` files via `continuedl`)
-- HD thumbnail button (JPG named as video, `maxres → sd → hq → mq` fallback) using `icons/graphic-style.svg`
+- HD thumbnail button — works **without the server** (direct `i.ytimg.com`,
+  `maxres → sd → hq → mq` probe), saved as `Thumbnail-{VideoID}.jpg`, icon `icons/graphic-style.svg`
+- Title/author preview without the server (YouTube oEmbed, `noembed.com` fallback);
+  only the quality list + video download need `server.py`
 - Modern popup UI (thumbnail card, selectable quality cards, animated progress bar)
 - Extension icon: `extension/icons/youtube-1.png`
 - Chrome range/resume (`206`) safe: 30-min file cache in `%TEMP%/yt-personal-saver`
@@ -27,7 +30,8 @@ popup (tab URL + quality)
   → POST localhost:8000/api/start {url, quality} → {job_id}
   → poll GET /api/progress?job_id= → {status, pct, downloaded, total, speed, eta}
   → done → chrome.downloads.download(GET /api/file?job_id=)
-Thumbnail: GET /api/thumbnail?url=&title=&json=1 → {thumb_url, filename} → chrome.downloads
+Thumbnail + title preview: fully client-side (i.ytimg.com probe + oEmbed, no server).
+Server GET /api/thumbnail?url=&title=&json=1 → {thumb_url, filename} is fallback for non-YouTube URLs only.
 Legacy: GET /api/download?url=&quality= (single-shot, no progress)
 ```
 
@@ -52,7 +56,7 @@ Load extension:
 1. `chrome://extensions/` → Developer Mode → Load unpacked → select `extension/`
 2. Open an own/CC video → click toolbar icon → qualities auto-load
 3. Pick quality → Download → Pause/Cancel if needed → file lands in Downloads
-4. `🖼 Thumb` button or click preview image = HD JPG named as video
+4. `🖼 Thumb` button or click preview image = HD JPG named `Thumbnail-{VideoID}.jpg` (works even with the server stopped)
 
 ## Auto-start (no terminal every time)
 
@@ -74,7 +78,7 @@ Idle cost is ~40 MB RAM, 0% CPU, so background run is fine.
 | GET | `/api/progress?job_id=` | `{status, pct, downloaded, total, speed, eta, title, file_size, file_size_str}`; `status`: queued/starting/downloading/merging/paused/done/cancelled/error |
 | GET | `/api/file?job_id=` | Final mp4/mp3, `Content-Disposition` = video title, range-capable |
 | POST | `/api/cancel|/api/pause|/api/resume {job_id}` | Pause keeps `.part` for resume; cancel deletes `job_id.*` |
-| GET | `/api/thumbnail?url=&title=&json=1` | `{thumb_url (JPG), filename (<title>.jpg)}`; without `json=1` proxies JPG bytes |
+| GET | `/api/thumbnail?url=&title=&json=1` | Fallback for non-YouTube URLs only (YouTube thumbs download client-side, no server). `{thumb_url (JPG), filename (Thumbnail-{id}.jpg)}`; without `json=1` proxies JPG bytes |
 | GET | `/api/download?url=&quality=` | Legacy single-shot (no progress), cached 30 min |
 
 Quality keys: `best, 2160p, 1440p, 1080p, 720p, 480p, 360p, audio` + dynamic `h{height}`.
@@ -87,7 +91,7 @@ requirements.txt     # flask, flask-cors, yt-dlp
 start_server.bat     # manual launch (console)
 stop_server.bat      # stop bg server.py only
 extension/
-  manifest.json      # MV3, permissions, host_permissions localhost:8000, icons
+  manifest.json      # MV3, permissions, host_permissions (localhost:8000 + i.ytimg.com + youtube.com + noembed.com), icons
   popup.html         # modern UI
   popup.js           # info/qualities/progress/cancel/pause/thumb logic
   icons/
