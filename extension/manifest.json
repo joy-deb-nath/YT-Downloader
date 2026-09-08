@@ -1,0 +1,24 @@
+{
+  "manifest_version": 3,
+  "name": "Personal Video Saver",
+  "version": "0.1.0",
+  "description": "Personal-use saver for your own / CC content via local backend.",
+  "permissions": ["activeTab", "tabs", "downloads", "scripting"],
+  "host_permissions": ["http://127.0.0.1:8000/*", "http://localhost:8000/*"],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Personal Saver",
+    "default_icon": {
+      "16": "icons/youtube-1.png",
+      "32": "icons/youtube-1.png",
+      "48": "icons/youtube-1.png",
+      "128": "icons/youtube-1.png"
+    }
+  },
+  "icons": {
+    "16": "icons/youtube-1.png",
+    "32": "icons/youtube-1.png",
+    "48": "icons/youtube-1.png",
+    "128": "icons/youtube-1.png"
+  }
+}
